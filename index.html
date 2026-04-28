@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CPU Campus Navigator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>CPU Campus Navigator</h1>
+    <div class="subtitle">Central Philippine University &middot; Iloilo City</div>
+
+    <div class="card">
+
+      <div class="section-label">Route</div>
+      <div class="row">
+        <div>
+          <label for="start">From</label>
+          <select id="start"></select>
+        </div>
+        <div>
+          <label for="end">To</label>
+          <select id="end"></select>
+        </div>
+      </div>
+
+      <div class="section-label">Travel Mode</div>
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="walking">🚶 Walking</button>
+        <button class="mode-btn" data-mode="running">🏃 Running</button>
+        <button class="mode-btn" data-mode="driving">🚗 Driving</button>
+      </div>
+
+      <div class="section-label">Intermediate Stops</div>
+      <div class="stop-row">
+        <select id="stop-select"></select>
+        <button class="btn-sm btn-primary" id="add-stop-btn">+ Add Stop</button>
+        <button class="btn-sm btn-ghost" id="clear-stops-btn">Clear</button>
+      </div>
+      <div class="stops-list" id="stops-list"></div>
+
+      <div class="section-label">Blocked Buildings / Paths</div>
+      <div class="block-row">
+        <select id="block-select" multiple title="Hold Ctrl / Cmd to select multiple"></select>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button class="btn-sm btn-primary" id="apply-block-btn">Block</button>
+          <button class="btn-sm btn-ghost" id="clear-block-btn">Clear</button>
+        </div>
+      </div>
+      <div class="blocked-tags" id="blocked-tags"></div>
+
+      <button class="find-btn" onclick="findPath()">Find Shortest Path</button>
+
+      <div class="result" id="result">Select start and end to find a path.</div>
+
+      <div class="map-wrap">
+        <svg id="campus-svg" viewBox="0 0 760 590"></svg>
+      </div>
+
+      <div class="legend">
+        <div class="leg-item">📍 Start &nbsp;🏁 End</div>
+        <div class="leg-item">👣 Path (animated)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Waypoint Stop</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2563eb"></div>On Path</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#334155"></div>Building</div>
+        <div class="leg-item"><div class="leg-tri"></div>Gate</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#dc2626"></div>Blocked</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
