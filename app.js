@@ -61,7 +61,7 @@ const drivingGraph = {
   "HS Gym":         ["Junior High Building"],
   "Johnson Hall":   ["CHM", "Elementary Gym"],
   "Junior High Building": ["HS Gym", "LEB", "PKGE"],
-  "Kindergarten":   ["Fine Arts", "University Gym"],
+  "Kindergarten":   ["Fine Arts", "University Gym", "RMA"],
   "LDT Building":   ["Weston Hall", "Henry Luce"],
   "LEB":            ["Junior High Building", "Senior High Building", "Lopez Hall"],
   "Lopez Hall":     ["LEB", "Roblee", "UY Building"],
