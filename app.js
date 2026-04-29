@@ -78,7 +78,7 @@ const drivingGraph = {
   "Tennis Court":   ["RMA", "University Gym"],
   "University Church": ["Kindergarten", "RMA"],
   "University Gym": ["Gate 7", "Gate 8", "Fine Arts", "Kindergarten", "RMA"],
-  "UY Building":    ["Lopez Hall"],
+  "UY Building":    ["Lopez Hall", "Roblee"],
   "Weston Hall":    ["Ancheta Hall", "Elementary Building", "Promenade", "LDT Building"]
 };
 
