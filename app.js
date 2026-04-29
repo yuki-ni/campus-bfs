@@ -46,7 +46,7 @@ const drivingGraph = {
   "Gate 4":         ["Senior High Building", "LEB"],
   "Gate 6":         ["Elementary Field", "CHM"],
   "Gate 8":         ["University Gym"],
-  "Admin Building":  ["Gate 2", "Promenade"],
+  "Admin Building":  ["Gate 1", "Promenade"],
   "Ancheta Hall":    ["Johnson Hall", "Elementary Building"],
   "CHM":             ["Elementary Field", "Gate 6"],
   "Elementary Building": ["Gate 1", "Weston Hall", "Promenade", "Admin Building"],
