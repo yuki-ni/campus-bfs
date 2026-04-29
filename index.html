@@ -24,12 +24,15 @@
           <select id="end"></select>
         </div>
       </div>
+      <div id="driving-banner" style="display:none;" class="banner">
+        🚗 <strong>Driving Rules:</strong> Enter via Gate 2 only. Exits: Gate 1, 6, 7, 8. One-way traffic applies.
+      </div>
 
       <div class="section-label">Travel Mode</div>
       <div class="mode-row">
-        <button class="mode-btn active" data-mode="walking">🚶 Walking</button>
-        <button class="mode-btn" data-mode="running">🏃 Running</button>
-        <button class="mode-btn" data-mode="driving">🚗 Driving</button>
+        <button class="mode-btn active" data-mode="walking" onclick="hideDrivingBanner()">🚶 Walking</button>
+        <button class="mode-btn" data-mode="running" onclick="hideDrivingBanner()">🏃 Running</button>
+        <button class="mode-btn" data-mode="driving" onclick="showDrivingBanner()">🚗 Driving</button>
       </div>
 
       <div class="section-label">Intermediate Stops</div>

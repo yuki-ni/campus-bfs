@@ -58,6 +58,16 @@ label {
   margin-bottom: 5px;
 }
 
+.banner {
+  background: #0f172a;
+  border-left: 4px solid #d0d2d6;
+  color: #d0d2d6;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+}
+
 select {
   width: 100%;
   padding: 8px;
