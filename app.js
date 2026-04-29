@@ -339,6 +339,17 @@ function drawMap() {
   //big field
   html += `<rect x="280" y="210" width="240" height="120" rx="6" fill="#1a3a1a" opacity="0.7"/>`;
 
+  //elementary field
+  html += `<rect x="145" y="55" width="110" height="40" rx="6" fill="#1a3a1a" opacity="0.7"/>`;
+
+  //softball field
+  html += `<rect x="440" y="60" width="100" height="40" rx="6" fill="#1a3a1a" opacity="0.7"/>`;
+
+  // half moon
+  html += `<path d="M 50 280 A 50 40 0 0 1 50 425 L 50 280 Z" fill="#1a3a1a" opacity="0.7"/>`;
+  html += `<text x="90" y="360" text-anchor="middle" fill="#2d6a2d" font-size="11" font-family="Arial" font-weight="bold">HALF MOON</text>`;
+
+
   //edges
   const drawn = new Set();
   Object.entries(graph).forEach(([n, neighbors]) => {
