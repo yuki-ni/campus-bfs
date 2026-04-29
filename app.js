@@ -24,7 +24,7 @@ const graph = {
   "Swimming Pool":       ["Henry Luce", "University Gym", "Softball Field", "Tennis Court"],
   "Softball Field":      ["Swimming Pool"],
   "Tennis Court":        ["RMA", "University Gym", "Swimming Pool", "Gate 8"],
-  "University Gym":      ["Gate 7", "Gate 8", "RMA", "Kindergarten", "Tennis Court"],
+  "University Gym":      ["Gate 7", "Gate 8", "RMA", "Kindergarten", "Tennis Court", "Fine Arts"],
   "Kindergarten":        ["University Gym", "University Church", "RMA", "Fine Arts"],
   "University Church":   ["Kindergarten", "Engineering Building", "Big Field", "RMA"],
   "Big Field":           ["Promenade", "LDT Building", "Henry Luce", "RMA", "University Church", "Franklin Hall", "Engineering Building", "Weston Hall", "Roblee"],
@@ -38,8 +38,37 @@ const graph = {
   "Junior High Building":["UY Building", "PKGE", "Lopez Hall", "LEB", "Senior High Building", "HS Gym"],
   "Senior High Building":["LEB", "Junior High Building", "HS Gym"],
   "HS Gym":              ["Junior High Building", "Senior High Building"],
-  "Fine Arts":           ["Kindergarten", "Anatomy", "Gate 7"],
+  "Fine Arts":           ["Kindergarten", "Anatomy", "Gate 7", "University Gym"],
   "Anatomy":             ["Fine Arts"]
+};
+
+const drivingGraph = {
+  "Gate 2": ["Promenade", "Admin Building"],
+  "Promenade": ["New Valentine"],
+  "New Valentine": ["Roblee"],
+  "Roblee": ["UY Building", "Franklin Hall"],
+  "UY Building": ["Lopez Hall"],
+  "Lopez Hall": ["LEB"],
+  "LEB": ["Junior High Building", "Senior High Building"],
+  "Junior High Building": ["PKGE", "HS Gym"],
+  "HS Gym": ["Junior High Building"],
+  "PKGE": ["Engineering Building"],
+  "Franklin Hall": ["Engineering Building"],
+  "Engineering Building": ["University Church"],
+  "University Church": ["Kindergarten", "RMA"],
+  "Kindergarten": ["Fine Arts", "University Gym"],
+  "Fine Arts": ["Gate 7", "University Gym"],
+  "University Gym": ["Gate 7", "Gate 8"],
+  "RMA": ["Henry Luce"],
+  "Henry Luce": ["LDT Building"],
+  "LDT Building": ["Weston Hall"],
+  "Weston Hall": ["Ancheta Hall", "Elementary Building", "Promenade"],
+  "Ancheta Hall": ["Johnson Hall"],
+  "Johnson Hall": ["CHM"],
+  "CHM": ["Gate 6", "Elementary Field"],
+  "Elementary Field": ["Elementary Gym", "Gate 6"],
+  "Elementary Gym": ["Elementary Building"],
+  "Elementary Building": ["Gate 1"],
 };
 
 //travel time
@@ -72,15 +101,15 @@ const pos = {
   "Old Valentine":       { x: 170, y: 410 },
   "New Valentine":       { x: 200, y: 360 },
   "Mary Thomas":         { x: 140, y: 470 },
-  "LDT Building":        { x: 390, y: 160 },
-  "Henry Luce":          { x: 470, y: 160 },
-  "RMA":                 { x: 560, y: 160 },
+  "LDT Building":        { x: 390, y: 185 },
+  "Henry Luce":          { x: 470, y: 185 },
+  "RMA":                 { x: 560, y: 185 },
   "Tennis Court":        { x: 575, y: 110 },
   "Swimming Pool":       { x: 490, y: 120 },
   "Softball Field":      { x: 490, y: 80  },
   "University Gym":      { x: 640, y: 160 },
-  "Kindergarten":        { x: 580, y: 240 },
-  "University Church":   { x: 570, y: 270 },
+  "Kindergarten":        { x: 580, y: 250 },
+  "University Church":   { x: 570, y: 280 },
   "Big Field":           { x: 400, y: 275 },
   "Engineering Building":{ x: 500, y: 360 },
   "Franklin Hall":       { x: 390, y: 360 },
@@ -92,17 +121,18 @@ const pos = {
   "Junior High Building":{ x: 450, y: 475 },
   "Senior High Building":{ x: 325, y: 545 },
   "HS Gym":              { x: 450, y: 545 },
-  "Fine Arts":           { x: 650, y: 240 },
-  "Anatomy":             { x: 650, y: 270 }
+  "Fine Arts":           { x: 650, y: 250 },
+  "Anatomy":             { x: 650, y: 280 }
 };
 
 let currentPath  = null;
 let blockedNodes = new Set();
 let stops        = [];     
 let travelMode   = "walking";
+let allNodes     = []; 
 
 //bfs shortest path
-function bfsShortestPath(start, end, blocked) {
+function bfsShortestPath(start, end, blocked, activeGraph) {
   if (start === end) return [start];
   const queue   = [[start]];
   const visited = new Set();
@@ -112,7 +142,7 @@ function bfsShortestPath(start, end, blocked) {
     if (node === end) return path;
     if (!visited.has(node)) {
       visited.add(node);
-      for (const nb of graph[node] || []) {
+      for (const nb of activeGraph[node] || []) {
         if (!blocked.has(nb) || nb === end)
           queue.push([...path, nb]);
       }
@@ -122,10 +152,10 @@ function bfsShortestPath(start, end, blocked) {
 }
 
 //multi-stop route builder
-function buildMultiStopRoute(waypoints, blocked) {
+function buildMultiStopRoute(waypoints, blocked, activeGraph) {
   let full = [];
   for (let i = 0; i < waypoints.length - 1; i++) {
-    const seg = bfsShortestPath(waypoints[i], waypoints[i + 1], blocked);
+    const seg = bfsShortestPath(waypoints[i], waypoints[i + 1], blocked, activeGraph);
     if (!seg) return null;
     full = i === 0 ? seg : full.concat(seg.slice(1));
   }
@@ -142,12 +172,23 @@ function formatTime(hops, mode) {
   return `${m} min ${s}s`;
 }
 
+function populateDropdown(el, nodes, filterFn = null) {
+  el.innerHTML = nodes
+    .filter(n => !filterFn || filterFn(n))
+    .map(n => `<option value="${n}">${n}</option>`)
+    .join("");
+}
+
+const DRIVING_FILTERS = {
+  start: n => !["Gate 1", "Gate 3", "Gate 4", "Gate 5", "Gate 6", "Gate 7", "Gate 8"].includes(n),
+  end:   n => !["Gate 2", "Gate 3", "Gate 4", "Gate 5"].includes(n)
+};
+
 function initDropdowns() {
-  const nodes = Object.keys(graph);
+  allNodes = Object.keys(graph);
 
   ["start", "end", "stop-select", "block-select"].forEach(id => {
-    const el = document.getElementById(id);
-    nodes.forEach(n => el.innerHTML += `<option value="${n}">${n}</option>`);
+    populateDropdown(document.getElementById(id), allNodes);
   });
   document.getElementById("end").value = "Henry Luce";
 
@@ -157,6 +198,7 @@ function initDropdowns() {
       travelMode = btn.dataset.mode;
       document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      updateDropdownOptions(); 
       if (currentPath) renderResult();
     });
   });
@@ -165,6 +207,21 @@ function initDropdowns() {
   document.getElementById("clear-stops-btn").addEventListener("click", clearStops);
   document.getElementById("apply-block-btn").addEventListener("click", applyBlock);
   document.getElementById("clear-block-btn").addEventListener("click", clearBlock);
+}
+
+function updateDropdownOptions() {
+  const startSelect = document.getElementById("start");
+  const endSelect = document.getElementById("end");
+  const currentStart = startSelect.value;
+  const currentEnd = endSelect.value;
+  
+  populateDropdown(startSelect, allNodes, 
+    travelMode === "driving" ? DRIVING_FILTERS.start : null);
+  populateDropdown(endSelect, allNodes, 
+    travelMode === "driving" ? DRIVING_FILTERS.end : null);
+  
+  if (allNodes.includes(currentStart)) startSelect.value = currentStart;
+  if (allNodes.includes(currentEnd)) endSelect.value = currentEnd;
 }
 
 function addStop() {
@@ -227,6 +284,17 @@ function findPath() {
   const end   = document.getElementById("end").value;
   const waypoints = [start, ...stops, end];
 
+  if (travelMode === "driving") {
+    if (isGate(start) && start !== "Gate 2") {
+      showMsg("⚠️ Cars must enter through Gate 2.");
+      currentPath = null; drawMap(); return;
+    }
+  } else {
+    hideDrivingBanner();
+  }
+
+  const activeGraph = (travelMode === "driving") ? drivingGraph : graph;
+
   if (start === end && stops.length === 0) {
     showMsg("Start and end cannot be the same.");
     currentPath = null; drawMap(); return;
@@ -238,7 +306,7 @@ function findPath() {
     }
   }
 
-  const path = buildMultiStopRoute(waypoints, blockedNodes);
+  const path = buildMultiStopRoute(waypoints, blockedNodes, activeGraph);
   currentPath = path;
 
   if (!path) {
@@ -306,6 +374,14 @@ function footstepsAlongEdge(x1, y1, x2, y2, edgeIndex) {
     </g>`;
   }
   return out;
+}
+
+function showDrivingBanner() {
+  document.getElementById("driving-banner").style.display = "block";
+}
+
+function hideDrivingBanner() {
+  document.getElementById("driving-banner").style.display = "none";
 }
 
 function drawMap() {
